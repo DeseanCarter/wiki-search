@@ -2,8 +2,7 @@ import requests
 from flask import Flask, jsonify
 app = Flask(__name__)
 
-#value = input("Please input a subject to get response from Wikipedia")
-
+API = ''
 #GET request
 @app.route('/')
 def hello_world():
@@ -19,26 +18,35 @@ def hello_world():
     search_results.status_code
     DATA =  search_results.json()
     PAGES = DATA["query"]["pages"]
-    return PAGES
-    import pdb; pdb.set_trace()
+
+    links = []
+    new_dict = {"links":links}
+
+    for key, value in PAGES.items():
+        print(key)
+
+    singleurl = PAGES[key]["iwlinks"]
+
+    singleurl2 = PAGES[key]["iwlinks"][0]["url"]
     
-#POST requests
-@app.route('/dog')
-def new_world():
-    payload = {'key1': 'value1'}
-    search_results2 = requests.post('https://www.mediawiki.org/wiki/API:Search/', data= payload)
-    # import pdb; pdb.set_trace()
-    return 'Hello New World'
+    print(singleurl2)
 
+    # length of point in dict
+    print(len(PAGES[key]))
+    
+    
+    for x in singleurl:
+        links.append(x["url"])
+        
 
-@app.route('/ordinary')
-def evil_world():
-    payload = {'key1': 'value1'}
-    search_results = requests.post('https://www.mediawiki.org/wiki/API:Search', params= payload)
-    # import pdb; pdb.set_trace()
-    return 'evil World'    
+    print(new_dict)
 
+    import json
+    return jsonify(new_dict)
+    import pdb; pdb.set_trace()
 
+    
 if __name__ == '__main__':
     # run app in debug mode
-    app.run(debug=True)    
+    app.config['SERVER_NAME'] = 'wiki-search.com:5000'
+    app.run(debug=True)
